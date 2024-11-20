@@ -1,5 +1,6 @@
-from fastapi.testclient import TestClient
 import pytest
+from fastapi.testclient import TestClient
+
 from app.main import app, get_repository
 from app.repositories import TaskRepository
 

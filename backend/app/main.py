@@ -1,14 +1,12 @@
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from pydantic import BaseModel, ConfigDict
 from datetime import datetime
-from typing import List
+
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, ConfigDict
+from sqlalchemy.orm import Session
 
 from .database import get_db
 from .repositories import TaskRepository
-from . import models
-
 
 app = FastAPI(title="Task Management API")
 
@@ -42,7 +40,7 @@ async def create_task(task: TaskCreate, repo: TaskRepository = Depends(get_repos
     return repo.create(task.description)
 
 
-@app.get("/tasks/", response_model=List[Task])
+@app.get("/tasks/", response_model=list[Task])
 async def get_tasks(repo: TaskRepository = Depends(get_repository)):
     """Get all tasks."""
     return repo.get_all()

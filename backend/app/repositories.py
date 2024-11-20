@@ -1,7 +1,8 @@
-from datetime import datetime, UTC
-from typing import List, Optional
-from . import models
+from datetime import UTC, datetime
+
 from sqlalchemy.orm import Session
+
+from . import models
 
 
 class TaskRepository:
@@ -25,7 +26,7 @@ class TaskRepository:
         self._current_id += 1
         return task
 
-    def get_all(self) -> List[models.Task]:
+    def get_all(self) -> list[models.Task]:
         if self.db:
             return self.db.query(models.Task).all()
         return self._tasks
