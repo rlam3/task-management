@@ -10,6 +10,9 @@ packages = [{include = "task_management_api"}]
 python = "^3.12"
 fastapi = "^0.115.5"
 uvicorn = {extras = ["standard"], version = "^0.32.0"}
+sqlalchemy = "^2.0.36"
+psycopg2-binary = "^2.9.10"
+alembic = "^1.14.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
