@@ -28,31 +28,66 @@ A full-stack task management application built with FastAPI, PostgreSQL, and Vue
 
 ## Development Setup
 
-### Backend
+### Database Setup
 
-1. Create PostgreSQL database:
+1. Install PostgreSQL if not already installed:
+
+```bash
+# macOS (using Homebrew)
+brew install postgresql
+brew services start postgresql
+```
+
+2. Create the database:
 
 ```bash
 createdb task_management
 ```
 
-2. Install dependencies and run server:
+3. Update database connection (if needed):
+   - Open `backend/app/database.py`
+   - Modify `SQLALCHEMY_DATABASE_URL` if your PostgreSQL credentials are different:
+
+```python
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@localhost/task_management"
+```
+
+### Backend Setup
+
+1. Install Poetry if not already installed:
+
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+2. Install dependencies and activate virtual environment:
 
 ```bash
 cd backend
 poetry install
-poetry run uvicorn app.main:app --reload
+poetry shell
+```
+
+3. Run the development server:
+
+```bash
+uvicorn app.main:app --reload
 ```
 
 The API will be available at <http://localhost:8000>
 
-### Frontend
+### Frontend Setup
 
-1. Install dependencies and run development server:
+1. Install dependencies:
 
 ```bash
 cd frontend
 npm install
+```
+
+2. Run the development server:
+
+```bash
 npm run dev
 ```
 
@@ -91,21 +126,67 @@ cd backend
 poetry run pytest
 ```
 
-## Current Status
+## API Endpoints
 
-✅ Project is complete with:
+### GET /tasks
 
-- [x] Frontend implementation
-  - [x] Task list component
-  - [x] Add task form
-  - [x] API integration
-  - [x] Error handling
-  - [x] Loading states
-  - [x] Unit tests
+- Returns a list of all tasks
+- Response: `200 OK`
 
-- [x] Backend implementation
-  - [x] FastAPI setup
-  - [x] Database integration
-  - [x] Repository pattern
-  - [x] CORS configuration
-  - [x] Unit tests
+```json
+[
+  {
+    "id": 1,
+    "description": "Example task",
+    "created_at": "2024-01-20T10:00:00Z"
+  }
+]
+```
+
+### POST /tasks
+
+- Creates a new task
+- Request body:
+
+```json
+{
+  "description": "New task"
+}
+```
+
+- Response: `201 Created`
+
+### DELETE /tasks/{id}
+
+- Deletes a task by ID
+- Response: `204 No Content`
+- Returns `404 Not Found` if task doesn't exist
+
+## Database Schema
+
+### Tasks Table
+
+```sql
+CREATE TABLE tasks (
+    id SERIAL PRIMARY KEY,
+    description VARCHAR NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Common Issues
+
+### Database Connection
+
+- Ensure PostgreSQL is running
+- Verify database exists: `psql -l | grep task_management`
+- Check connection URL matches your PostgreSQL setup
+- Default credentials are username: 'postgres', password: 'postgres'
+
+### Port Conflicts
+
+- Backend default port: 8000
+- Frontend default port: 5173
+- If ports are in use, you can modify:
+  - Backend: Use `uvicorn app.main:app --reload --port <port>`
+  - Frontend: Update `vite.config.ts`
