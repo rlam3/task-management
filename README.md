@@ -93,40 +93,12 @@ npm run dev
 
 The application will be available at <http://localhost:5173>
 
-## Project Structure
-
-### Frontend
-
-- `src/components/` - Vue components
-- `src/api/` - API client
-- `src/types/` - TypeScript types
-- `src/components/__tests__/` - Component tests
-
-### Backend
-
-- `app/main.py` - FastAPI application and routes
-- `app/models.py` - SQLAlchemy models
-- `app/repositories.py` - Data access layer
-- `app/database.py` - Database configuration
-- `tests/` - Backend tests
-
-## Testing
-
-### Frontend Tests
-
-```bash
-cd frontend
-npm run test:unit
-```
-
-### Backend Tests
-
-```bash
-cd backend
-poetry run pytest
-```
-
 ## API Endpoints
+
+API documentation available at:
+
+- <http://localhost:8000/docs> - Swagger UI
+- <http://localhost:8000/redoc> - ReDoc
 
 ### GET /tasks
 
@@ -162,16 +134,20 @@ poetry run pytest
 - Response: `204 No Content`
 - Returns `404 Not Found` if task doesn't exist
 
-## Database Schema
+## Testing
 
-### Tasks Table
+### Frontend Tests
 
-```sql
-CREATE TABLE tasks (
-    id SERIAL PRIMARY KEY,
-    description VARCHAR NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+```bash
+cd frontend
+npm run test:unit
+```
+
+### Backend Tests
+
+```bash
+cd backend
+poetry run pytest
 ```
 
 ## Common Issues
