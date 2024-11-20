@@ -28,17 +28,16 @@
                 year: "numeric",
                 month: "long",
                 day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
               })
             }}
           </span>
           <button
             @click="$emit('delete-task', task.id)"
             data-test="delete-button"
-            class="px-3 py-1.5 text-sm text-red-600 font-medium rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+            class="px-3 py-1.5 text-sm text-red-600 font-medium rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 disabled:opacity-50"
+            :disabled="loading"
           >
-            Delete
+            {{ loading ? "Deleting..." : "Delete" }}
           </button>
         </div>
       </li>
@@ -51,6 +50,7 @@ import type { Task } from "../types/task";
 
 defineProps<{
   tasks: Task[];
+  loading?: boolean;
 }>();
 
 defineEmits<{

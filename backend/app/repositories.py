@@ -1,5 +1,5 @@
 from datetime import datetime, UTC
-from typing import List
+from typing import List, Optional
 from . import models
 from sqlalchemy.orm import Session
 
@@ -18,7 +18,6 @@ class TaskRepository:
             self.db.refresh(task)
             return task
 
-        # For testing without database
         task = models.Task(
             id=self._current_id, description=description, created_at=datetime.now(UTC)
         )
@@ -30,3 +29,20 @@ class TaskRepository:
         if self.db:
             return self.db.query(models.Task).all()
         return self._tasks
+
+    def delete(self, task_id: int) -> bool:
+        if self.db:
+            task = self.db.query(models.Task).filter(models.Task.id == task_id).first()
+            if task:
+                self.db.delete(task)
+                self.db.commit()
+                return True
+            return False
+
+        task_idx = next(
+            (idx for idx, task in enumerate(self._tasks) if task.id == task_id), None
+        )
+        if task_idx is not None:
+            self._tasks.pop(task_idx)
+            return True
+        return False

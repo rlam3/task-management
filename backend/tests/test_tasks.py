@@ -53,3 +53,34 @@ class TestGetTasks:
         response = client.get("/tasks/")
         tasks = response.json()
         assert any(task["description"] == description for task in tasks)
+
+
+class TestDeleteTask:
+    def test_returns_204_when_task_deleted(self):
+        """Test successful task deletion returns 204."""
+        # Create a task
+        create_response = client.post("/tasks/", json={"description": "Task to delete"})
+        task_id = create_response.json()["id"]
+
+        # Delete the task
+        response = client.delete(f"/tasks/{task_id}")
+        assert response.status_code == 204
+
+    def test_returns_404_when_deleting_nonexistent_task(self):
+        """Test deleting non-existent task returns 404."""
+        response = client.delete("/tasks/999")
+        assert response.status_code == 404
+
+    def test_deleted_task_not_in_list(self):
+        """Test deleted task is removed from tasks list."""
+        # Create a task
+        create_response = client.post("/tasks/", json={"description": "Task to delete"})
+        task_id = create_response.json()["id"]
+
+        # Delete the task
+        client.delete(f"/tasks/{task_id}")
+
+        # Verify task is not in list
+        response = client.get("/tasks/")
+        tasks = response.json()
+        assert not any(task["id"] == task_id for task in tasks)

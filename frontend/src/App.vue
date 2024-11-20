@@ -12,7 +12,11 @@
           {{ error }}
         </div>
         <AddTask @add-task="handleAddTask" :loading="loading" />
-        <TaskList :tasks="tasks" @delete-task="handleDeleteTask" />
+        <TaskList
+          :tasks="tasks"
+          :loading="loading"
+          @delete-task="handleDeleteTask"
+        />
       </div>
     </div>
   </div>
@@ -23,7 +27,7 @@ import { ref, onMounted } from "vue";
 import TaskList from "./components/TaskList.vue";
 import AddTask from "./components/AddTask.vue";
 import type { Task } from "./types/task";
-import { getTasks, createTask } from "./api/tasks";
+import { getTasks, createTask, deleteTask } from "./api/tasks";
 
 const tasks = ref<Task[]>([]);
 const loading = ref(false);
@@ -56,9 +60,19 @@ async function handleAddTask(description: string) {
   }
 }
 
-const handleDeleteTask = (id: number) => {
-  tasks.value = tasks.value.filter((task) => task.id !== id);
-};
+async function handleDeleteTask(id: number) {
+  try {
+    loading.value = true;
+    error.value = null;
+    await deleteTask(id);
+    tasks.value = tasks.value.filter((task) => task.id !== id);
+  } catch (e) {
+    error.value = "Failed to delete task";
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
+}
 
 onMounted(() => {
   loadTasks();
