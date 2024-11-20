@@ -1,15 +1,18 @@
 from fastapi.testclient import TestClient
 import pytest
-from app.main import app, tasks
+from app.main import app, get_repository
+from app.repositories import TaskRepository
 
 client = TestClient(app)
 
 
 @pytest.fixture(autouse=True)
-def clear_tasks():
-    """Clear tasks before each test."""
-    tasks.clear()
+def mock_repo():
+    """Provide test repository and override dependency."""
+    repo = TaskRepository()
+    app.dependency_overrides[get_repository] = lambda: repo
     yield
+    app.dependency_overrides.clear()
 
 
 class TestCreateTask:
