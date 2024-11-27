@@ -10,12 +10,13 @@ from .repositories import TaskRepository
 
 app = FastAPI(title="Task Management API")
 
+# More permissive CORS settings for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"],  # Allows all origins in development
+    allow_credentials=True,  # Changed since we're not using credentials
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
 
@@ -51,4 +52,3 @@ async def delete_task(task_id: int, repo: TaskRepository = Depends(get_repositor
     """Delete a task."""
     if not repo.delete(task_id):
         raise HTTPException(status_code=404, detail="Task not found")
-    return None
